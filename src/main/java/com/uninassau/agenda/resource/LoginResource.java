@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uninassau.agenda.bean.dto.LoginDTO;
 import com.uninassau.agenda.bean.form.LoginForm;
 import com.uninassau.agenda.service.LoginService;
-import com.uninassau.agenda.util.Dados;
 
 @RestController
 @RequestMapping ("/api/auth")
@@ -28,11 +27,14 @@ public class LoginResource {
 	@PostMapping
 	public ResponseEntity<LoginDTO> login (@RequestBody LoginForm loginForm) {
 		
-		if (loginService.login(loginForm)) {
-			return ResponseEntity.ok(new LoginDTO(Dados.NOME, Dados.LOGIN));
-		} else {
+		try {
+			LoginDTO loginDTO = loginService.login(loginForm);
+
+			return ResponseEntity.ok(loginDTO);
+		} catch (SecurityException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
+		
 	}
 
 	
